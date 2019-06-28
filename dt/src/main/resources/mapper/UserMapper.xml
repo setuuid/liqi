@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dt.sys.user.dao.UserDao">
+	<!-- 字段与属性映射 -->
+	<resultMap type="com.dt.sys.user.pojo.User" id="user">
+		<id column="id" property="id"/>
+		<result column="username" property="username"/>
+		<result column="realname" property="realname"/>
+		<result column="salt" property="salt"/>
+		<result column="password" property="password"/>
+		<result column="phone" property="phone"/>
+		<result column="idcard" property="idcard"/>
+		<result column="headportrait" property="headportrait"/>
+	</resultMap>
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="user_columns">
+	    <![CDATA[
+			id ,
+			username ,
+			realname ,
+			salt ,
+			password ,
+			phone,
+			idcard,
+			headportrait
+	    ]]>
+	</sql>
+	<sql id="user_value">
+		<![CDATA[
+		   #{id,jdbcType=VARCHAR},
+		   #{username,jdbcType=VARCHAR},
+		   #{realname,jdbcType=VARCHAR},
+		   #{salt,jdbcType=VARCHAR},
+		   #{password,jdbcType=VARCHAR},
+		    #{phone,jdbcType=VARCHAR},
+		     #{idcard,jdbcType=VARCHAR},
+		    #{headportrait,jdbcType=VARCHAR}
+	   ]]>
+	</sql>
+
+
+
+	<!-- 保存用户 -->
+	<insert id="add">
+		INSERT INTO sys_user (<include refid="user_columns"/>) VALUES ( <include refid="user_value"/>)
+	</insert>
+
+	<!-- 编辑用户 -->
+	<update id="edit">
+		UPDATE sys_user
+		<set>
+			<if test="id != null and id !=''">
+				id =#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="username != null and username !=''">
+				username =#{username,jdbcType=VARCHAR},
+			</if>
+			<if test="realname != null and realname !=''">
+				realname =#{realname,jdbcType=VARCHAR},
+			</if>
+			<if test="salt != null and salt !=''">
+				salt =#{salt,jdbcType=VARCHAR}
+			</if>
+			<if test="password != null and password !=''">
+				password =#{password,jdbcType=VARCHAR}
+			</if>
+			<if test="idcard != null and idcard !=''">
+				idcard =#{idcard,jdbcType=VARCHAR}
+			</if>
+			<if test="headportrait != null and headportrait !=''">
+				headportrait =#{headportrait,jdbcType=VARCHAR}
+			</if>
+		</set>
+	</update>
+
+	<!-- 批量删除 -->
+	<delete id="batchDelete" parameterType="java.util.List">
+		delete from sys_user where id in
+		<foreach collection="ids" open="(" close=")" item="id" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+
+	<!-- 删除用户根据用户id -->
+	<delete id="del">
+		DELETE  FROM sys_user WHERE  id=#{id}
+	</delete>
+
+	<!-- 翻页查询 -->
+	<select id="findPage" resultMap="user" >
+		select <include refid="user_columns" /> from sys_user
+		<where>
+			<if test="id != null  and id != '' " >and id =#{id,jdbcType=VARCHAR}</if>
+			<if test="username != null and username != '' " >and username like "%"#{username,jdbcType=VARCHAR}"%"</if>
+			<if test="realname != null and realname != '' " >and realname like "%"#{realname,jdbcType=VARCHAR}"%"</if>
+		</where>
+		<if test="orderBy!=null and orderBy!=''">
+			ORDER BY ${orderBy}
+		</if>
+		<if test="order!=null and order!=''">
+			${order}
+		</if>
+	</select>
+
+	<!-- 查询所有用户 -->
+	<select id="findAll" resultMap="user" >
+		select <include refid="user_columns" /> from sys_user
+	</select>
+
+	<!-- 根据用户id查询用户对象 -->
+	<select id="findById" resultMap="user" >
+		select <include refid="user_columns" /> from sys_user where id=#{id}
+	</select>
+
+</mapper>

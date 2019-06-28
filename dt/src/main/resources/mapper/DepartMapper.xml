@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dt.sys.depart.dao.DepartDao">
+	<!-- 字段与属性映射 -->
+	<resultMap type="com.dt.sys.depart.pojo.Depart" id="depart">
+		<id column="id" property="id"/>
+        <id column="depart_name" property="departName"/>
+        <id column="depart_pid" property="departPid"/>
+        <id column="depart_name_en" property="departNameEn"/>
+        <id column="depart_name_abbr" property="departNameAbbr"/>
+        <id column="org_type" property="orgType"/>
+        <id column="org_code" property="orgCode"/>
+        <id column="fax" property="fax"/>
+        <id column="address" property="address"/>
+        <id column="remark" property="remark"/>
+        <id column="status" property="status"/>
+        <id column="company_property" property="companyProperty"/>
+        <id column="legal_person" property="legalPerson"/>
+        <id column="zip_code" property="zipCode"/>
+        <id column="industry" property="industry"/>
+        <id column="contact_person" property="contactPerson"/>
+	</resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="depart_columns">
+	    <![CDATA[
+			id ,
+			depart_name ,
+			depart_pid ,
+			depart_name_en ,
+			depart_name_abbr ,
+			org_type,
+			org_code,
+			fax,
+			address,
+			remark,
+			status,
+			company_property,
+			legal_person,
+			zip_code,
+			industry,
+			contact_person
+	    ]]>
+	</sql>
+
+
+
+
+</mapper>
