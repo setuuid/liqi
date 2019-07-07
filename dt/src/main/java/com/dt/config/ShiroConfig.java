@@ -1,6 +1,6 @@
 package com.dt.config;
 
-import com.dt.realm.CustomRealm;
+import com.dt.realm.MyRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -31,10 +31,10 @@ public class ShiroConfig {
 
     //自定义的realm对象
     @Bean
-    public CustomRealm myRealm(){
-        CustomRealm customRealm = new CustomRealm();
-        customRealm.setCredentialsMatcher(credentialsMatcher());
-        return customRealm;
+    public MyRealm myRealm(){
+        MyRealm myRealm = new MyRealm();
+        myRealm.setCredentialsMatcher(credentialsMatcher());
+        return myRealm;
     }
 
     //创建securityManager对象

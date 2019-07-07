@@ -112,5 +112,11 @@
 	<select id="findById" resultMap="user" >
 		select <include refid="user_columns" /> from sys_user where id=#{id}
 	</select>
+    <select id="findPassword" resultType="java.lang.String">
+		select password from sys_user where username=#{username}
+	</select>
+    <select id="findUserByUsername" resultType="com.dt.sys.user.pojo.User">
+        select <include refid="user_columns" />  from sys_user where username=#{username}
+    </select>
 
 </mapper>

@@ -51,4 +51,18 @@ public interface UserDao {
      * @return
      */
     User findById(@Param(value = "id")String id);
+
+    /**
+     * 根据登陆名查询密码
+     * @param username
+     * @return
+     */
+    String findPassword(@Param(value = "username")String username);
+
+    /**
+     * 根据登陆名查询user对象
+     * @param username
+     * @return
+     */
+    User findUserByUsername(@Param(value = "username")String username);
 }
