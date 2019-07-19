@@ -6,12 +6,11 @@ import com.dt.sys.user.dao.UserDao;
 import com.dt.sys.user.pojo.User;
 import com.dt.sys.user.service.UserService;
 import com.dt.sys.user.vo.UserVo;
+import com.dt.utils.MD5Util;
 import com.dt.utils.UUIDUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.shiro.crypto.hash.Md5Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
 
-    private final static int RANDOM= 6;
     /**
      * 查询分页
      * @param userVo
@@ -74,10 +72,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void add(User user) {
         user.setId(UUIDUtil.getUUID());
-        String random = RandomStringUtils.random(RANDOM);
-        user.setSalt(random);
-        Md5Hash md5Hash = new Md5Hash(user.getPassword(), random, Constant.IITERATOR_TIMES);
-//        user.setPassword(md5Hash);
+        String salt = RandomStringUtils.random(Constant.RANDOM_SALT_NUM);
+        user.setSalt(salt);
+        String password = MD5Util.getMD5String(user.getPassword() + salt);
+        user.setPassword(password);
         userDao.add(user);
     }
 

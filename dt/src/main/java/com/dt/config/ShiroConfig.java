@@ -1,7 +1,6 @@
 package com.dt.config;
 
 import com.dt.realm.MyRealm;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -20,20 +19,11 @@ import java.util.LinkedHashMap;
 @Configuration
 public class ShiroConfig {
 
-    //创建凭证匹配器对象
-    @Bean
-    public HashedCredentialsMatcher credentialsMatcher(){
-        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-        hashedCredentialsMatcher.setHashAlgorithmName("MD5");
-        hashedCredentialsMatcher.setHashIterations(1);
-        return hashedCredentialsMatcher;
-    }
 
     //自定义的realm对象
     @Bean
     public MyRealm myRealm(){
         MyRealm myRealm = new MyRealm();
-        myRealm.setCredentialsMatcher(credentialsMatcher());
         return myRealm;
     }
 
@@ -46,7 +36,7 @@ public class ShiroConfig {
         return  securityManager;
     }
 
-    //验证
+    //验证 过滤器
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(){
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();

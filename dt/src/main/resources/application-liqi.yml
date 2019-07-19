@@ -11,13 +11,15 @@ pagehelper:
   supportMethodsArguments: true
   params: countSql
 
-#redis集群
+
 spring:
+  #thymeleaf模板引擎
   thymeleaf:
     cache: false
     suffix: .html
     encoding: UTF-8
     prefix: classpath:/templates/
+  #redis集群
   redis:
     host: 127.0.0.1
     port: 6379
