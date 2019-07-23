@@ -17,8 +17,8 @@ import java.util.logging.Logger;
  * @author: liqi
  * @create: 2019-07-04 14:33
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class MyAspect {
     private static Logger logger = (Logger) LoggerFactory.getLogger(MyAspect.class);
 

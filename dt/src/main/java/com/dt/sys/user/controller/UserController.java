@@ -33,7 +33,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/findPage")
-    public BaseVo<Object> findPage(@RequestBody UserVo userVo){
+    public BaseVo findPage(@RequestBody UserVo userVo){
         PageInfo<User> page = userService.findPage(userVo);
         baseVo.setData(page);
         return baseVo;

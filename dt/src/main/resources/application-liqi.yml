@@ -42,7 +42,8 @@ spring:
 
   datasource:
     name: liqi
-    url: jdbc:mysql://127.0.0.1:3306/liqi?useUnicode=true&characterEncoding=UTF-8
+
+    url: jdbc:mysql://127.0.0.1:3306/liqi?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     username: root
     password: root
     # 使用druid数据源

@@ -6,11 +6,12 @@ import com.dt.sys.user.dao.UserDao;
 import com.dt.sys.user.pojo.User;
 import com.dt.sys.user.service.UserService;
 import com.dt.sys.user.vo.UserVo;
-import com.dt.utils.MD5Util;
+import com.dt.utils.PasswordUtil;
 import com.dt.utils.UUIDUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,11 +72,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void add(User user) {
+        //id
         user.setId(UUIDUtil.getUUID());
-        String salt = RandomStringUtils.random(Constant.RANDOM_SALT_NUM);
+        //盐生成
+        String salt = RandomStringUtils.randomAlphanumeric(Constant.RANDOM_SALT_NUM);
         user.setSalt(salt);
-        String password = MD5Util.getMD5String(user.getPassword() + salt);
+        //加密后的密码
+        String password = PasswordUtil.getPassword(user.getPassword(), ByteSource.Util.bytes(salt));
         user.setPassword(password);
+        //保存
         userDao.add(user);
     }
 
@@ -99,4 +104,5 @@ public class UserServiceImpl implements UserService {
     public User findById(String id) {
         return userDao.findById(id);
     }
+
 }

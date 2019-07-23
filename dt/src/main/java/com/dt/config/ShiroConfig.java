@@ -1,6 +1,8 @@
 package com.dt.config;
 
+import com.dt.common.Constant;
 import com.dt.realm.MyRealm;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -19,15 +21,43 @@ import java.util.LinkedHashMap;
 @Configuration
 public class ShiroConfig {
 
+    /*
+     * 凭证匹配器 （由于我们的密码校验交给Shiro的SimpleAuthenticationInfo进行处理了
+     * 所以我们需要修改下doGetAuthenticationInfo中的代码; )
+     */
+    @Bean
+    public HashedCredentialsMatcher hashedCredentialsMatcher() {
+        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+        hashedCredentialsMatcher.setHashAlgorithmName(Constant.HASH_ALGORITHM_NAME);// 散列算法:这里使用MD5算法;
+        hashedCredentialsMatcher.setHashSalted(true);//加密码盐值
+        hashedCredentialsMatcher.setHashIterations(Constant.HASH_INTERATIONS);// 散列的次数，比如散列两次，相当于md5(md5(""));
+        return hashedCredentialsMatcher;
+    }
 
-    //自定义的realm对象
+
+    /**
+     *5 开启shiro注解支持 授权
+     */
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(){
+        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor=new AuthorizationAttributeSourceAdvisor();
+        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
+        return  authorizationAttributeSourceAdvisor;
+    }
+
+    /**
+     * 4 自定义的realm对象
+     */
     @Bean
     public MyRealm myRealm(){
         MyRealm myRealm = new MyRealm();
+        myRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return myRealm;
     }
 
-    //创建securityManager对象
+    /**
+     * 3 创建securityManager对象
+     */
     @Bean
     public DefaultWebSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
@@ -36,12 +66,15 @@ public class ShiroConfig {
         return  securityManager;
     }
 
-    //验证 过滤器
+    /**
+     * 2 验证 过滤器
+     */
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(){
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+       //设置安全管理器
         shiroFilterFactoryBean.setSecurityManager(securityManager());
-        shiroFilterFactoryBean.setLoginUrl("/login");
+//        shiroFilterFactoryBean.setLoginUrl("/tologin");
         //未授权的页面  授权不通过
         shiroFilterFactoryBean.setUnauthorizedUrl("/refuse");
         //过滤器有顺序  先匿名  ，登陆的 授权不通过的  这样的顺序
@@ -49,22 +82,18 @@ public class ShiroConfig {
         linkedHashMap.put("/images/**","anon");
         linkedHashMap.put("/js/**","anon");
         linkedHashMap.put("/styles/**","anon");
+        linkedHashMap.put("/login", "anon");
         linkedHashMap.put("/logout/**","anon");
+        linkedHashMap.put("/user/add","anon");
         linkedHashMap.put("/**","authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(linkedHashMap);
         return shiroFilterFactoryBean;
     }
 
-
-    //开启shiro注解支持 授权
-    @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(){
-        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor=new AuthorizationAttributeSourceAdvisor();
-        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
-        return  authorizationAttributeSourceAdvisor;
-    }
-
+    /**
+     * 1
+     */
     @Bean
     public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
         DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();

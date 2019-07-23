@@ -3,11 +3,13 @@ package com.dt.realm;
 import com.dt.sys.user.dao.UserDao;
 import com.dt.sys.user.pojo.User;
 import com.dt.utils.MD5Util;
+import com.dt.utils.PasswordUtil;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -27,6 +29,7 @@ public class MyRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.out.println("————权限认证————");
+        Object principal = principalCollection.getPrimaryPrincipal();
 //        String username = (String) SecurityUtils.getSubject().getPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 //        //获得该用户角色
@@ -54,13 +57,12 @@ public class MyRealm extends AuthorizingRealm {
         User user=userDao.findUserByUsername(token.getUsername());
         if (null == user) {
             throw new AccountException("用户名不正确");
-        } else {
-            String md5String = MD5Util.getMD5String(token.getPassword() + user.getSalt());
-            if (!user.getPassword().equals(md5String)) {
-                throw new IncorrectCredentialsException("密码不正确");
-            }
         }
+        //盐值 shiro
+        ByteSource salt = ByteSource.Util.bytes(user.getSalt());
+        //String password = PasswordUtil.getPassword(user.getPassword(), salt);
         //表示realm登陆比对信息：参数1：用户信息 2：密码 3：当前realm的名字
-        return new SimpleAuthenticationInfo(token.getPrincipal(), user.getPassword(), getName());
+        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), salt, getName());
+        return  simpleAuthenticationInfo;
     }
 }

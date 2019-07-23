@@ -123,14 +123,6 @@ public class DepartVo implements Serializable {
         this.address = address;
     }
 
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-
     public String getStatus() {
         return status;
     }
